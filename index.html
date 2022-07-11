@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+    <style>
+      #map {
+        width: 100%;
+        height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      var map = L.map("map", {
+        center: [35.219, -80.839],
+        zoom: 17
+      });
+      //OpenStreetmap basemap
+      var osm = L.tileLayer(
+        "https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.jpg?key=PPplib6pjH9Uo90NGbF4",
+        {
+          attribution:
+            '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
+        }
+      );
+      osm.addTo(map);
+
+      //WMS request
+      var wms_raster = new L.tileLayer.wms(
+        "http://virtualblackcharlotte.net/geoserver/Charlotte/wms",
+        {
+          layers: "Charlotte:jcsured0102bk03_ST_4",
+          format: "image/png",
+          transparent: true
+        }
+      );
+      wms_raster.addTo(map);
+      var wms_blocks = new L.tileLayer.wms(
+        "http://virtualblackcharlotte.net/geoserver/Charlotte/wms",
+        {
+          layers: "Charlotte:Blocks",
+          format: "image/png",
+          transparent: true
+        }
+      );
+      wms_blocks.addTo(map);
+
+      var wms_buildings = new L.tileLayer.wms(
+        "http://virtualblackcharlotte.net/geoserver/Charlotte/wms",
+        {
+          layers: "Charlotte:Buildings",
+          format: "image/png",
+          transparent: true
+        }
+      );
+      wms_buildings.addTo(map);
+
+      var overlayMaps = {
+        Raster: wms_raster,
+        Blocks: wms_blocks,
+        Buildings: wms_buildings
+      };
+      var basemap = {
+        OpenStreetMap: osm
+      };
+      var layerControl = L.control.layers(basemap, overlayMaps).addTo(map);
+    </script>
+  </body>
+</html>
